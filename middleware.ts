@@ -1,0 +1,88 @@
+import { createServerClient, type CookieOptions } from '@supabase/ssr'
+import { NextResponse, type NextRequest } from 'next/server'
+
+export async function middleware(request: NextRequest) {
+  let supabaseResponse = NextResponse.next({ request })
+
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return request.cookies.getAll()
+        },
+        setAll(cookiesToSet: Array<{ name: string; value: string; options: CookieOptions }>) {
+          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
+          supabaseResponse = NextResponse.next({ request })
+          cookiesToSet.forEach(({ name, value, options }) =>
+            supabaseResponse.cookies.set(name, value, options)
+          )
+        }
+      }
+    }
+  )
+
+  const {
+    data: { user }
+  } = await supabase.auth.getUser()
+  const pathname = request.nextUrl.pathname
+
+  // Helper agar cookie token yang baru di-refresh tidak hilang saat redirect
+  const redirectWithCookies = (targetPath: string) => {
+    const redirectResponse = NextResponse.redirect(new URL(targetPath, request.url))
+    supabaseResponse.cookies.getAll().forEach(cookie => {
+      redirectResponse.cookies.set(cookie.name, cookie.value)
+    })
+    return redirectResponse
+  }
+
+  if (pathname === '/login') {
+    if (user) {
+      return redirectWithCookies('/dashboard')
+    }
+    return supabaseResponse
+  }
+
+  if (!user) {
+    if (pathname.startsWith('/api/')) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+    return redirectWithCookies('/login')
+  }
+
+  const { data: profile } = await supabase
+    .from('users')
+    .select('role, is_active')
+    .eq('id', user.id)
+    .single()
+
+  if (!profile?.is_active) {
+    return redirectWithCookies('/login?error=inactive')
+  }
+
+  const ownerOnlyPaths = [
+    '/onboarding',
+    '/employees',
+    '/payroll',
+    '/reports',
+    '/cashflow',
+    '/stocks/opname'
+  ]
+  const isOwnerPath = ownerOnlyPaths.some(p => pathname.startsWith(p))
+
+  if (isOwnerPath && profile.role !== 'owner') {
+    if (pathname.startsWith('/api/')) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    }
+    return redirectWithCookies('/dashboard?error=forbidden')
+  }
+
+  return supabaseResponse
+}
+
+export const config = {
+  matcher: [
+    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)'
+  ]
+}
