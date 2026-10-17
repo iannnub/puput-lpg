@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
@@ -88,15 +89,19 @@ export async function AppShell({ children, activePath = '' }: AppShellProps) {
       <header className="border-b border-slate-200 bg-white">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6">
           <div className="flex items-center gap-3">
-            <Link
-              href="/dashboard"
-              className="inline-flex h-10 w-10 items-center justify-center rounded-md bg-primary font-bold text-white"
-            >
-              LPG
+            <Link href="/dashboard" className="inline-flex shrink-0 items-center">
+              <Image
+                src="/logo-transparent.png"
+                alt="Logo Puput LPG"
+                width={90}
+                height={50}
+                priority
+                className="h-11 w-auto object-contain"
+              />
             </Link>
-            <div>
+            <div className="border-l border-slate-200 pl-3">
               <div className="text-base font-bold text-slate-900">
-                {settings?.business_name || process.env.NEXT_PUBLIC_BUSINESS_NAME || 'Pangkalan LPG'}
+                {settings?.business_name || process.env.NEXT_PUBLIC_BUSINESS_NAME || 'Puput LPG'}
               </div>
               <div className="text-xs text-slate-600">
                 Sistem Distribusi & Buku Besar Operasional

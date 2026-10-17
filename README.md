@@ -1,8 +1,12 @@
-# puput-lpg
+<p align="center">
+  <img src="./public/logo-transparent.png" alt="Logo Puput LPG" width="320" />
+</p>
+
+# Puput LPG (`puput-lpg`)
 
 **Sistem Manajemen Distribusi, Stok 4-Keranjang, Piutang, Arus Kas, & Penggajian Pangkalan LPG**
 
-Aplikasi web operasional dan akuntansi terintegrasi untuk Pangkalan / Agen Distribusi LPG. Dibangun menggunakan **Next.js 15 (App Router, Server Actions, TypeScript)** dan **Supabase PostgreSQL 16** dengan seluruh mutasi stok, piutang, kas, dan penggajian dieksekusi secara atomik melalui fungsi PostgreSQL RPC (`SECURITY DEFINER`) dan dilindungi oleh **Row Level Security (RLS)**.
+Aplikasi web operasional dan akuntansi terintegrasi untuk Pangkalan / Agen Distribusi LPG **Puput LPG**. Dibangun menggunakan **Next.js 15 (App Router, Server Actions, TypeScript)** dan **Supabase PostgreSQL 16** dengan seluruh mutasi stok, piutang, kas, dan penggajian dieksekusi secara atomik melalui fungsi PostgreSQL RPC (`SECURITY DEFINER`) dan dilindungi oleh **Row Level Security (RLS)**.
 
 ---
 
