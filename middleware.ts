@@ -51,13 +51,28 @@ export async function middleware(request: NextRequest) {
     return redirectWithCookies('/login')
   }
 
-  const { data: profile } = await supabase
-    .from('users')
-    .select('role, is_active')
-    .eq('id', user.id)
-    .single()
+  const role = (user.app_metadata?.role || user.user_metadata?.role || (user as any).user_role) as 'owner' | 'staff' | undefined
+  const isActive = (user.app_metadata?.is_active ?? user.user_metadata?.is_active ?? true) as boolean
 
-  if (!profile?.is_active) {
+  let userRole = role
+  let userIsActive = isActive
+
+  // Hanya query database jika peran belum tersemat di token metadata
+  if (!userRole) {
+    const { data: profile } = await supabase
+      .from('users')
+      .select('role, is_active')
+      .eq('id', user.id)
+      .single()
+
+    if (!profile?.is_active) {
+      return redirectWithCookies('/login?error=inactive')
+    }
+    userRole = profile.role
+    userIsActive = profile.is_active
+  }
+
+  if (!userIsActive) {
     return redirectWithCookies('/login?error=inactive')
   }
 
@@ -71,7 +86,7 @@ export async function middleware(request: NextRequest) {
   ]
   const isOwnerPath = ownerOnlyPaths.some(p => pathname.startsWith(p))
 
-  if (isOwnerPath && profile.role !== 'owner') {
+  if (isOwnerPath && userRole !== 'owner') {
     if (pathname.startsWith('/api/')) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }

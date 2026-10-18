@@ -33,7 +33,14 @@ next-env.d.ts
 
 # qa screenshots & local docs
 /docs/screenshots
+/docs/perf
+/docs/qa
 
 # abaikan seluruh file dokumentasi .md kecuali README.md
 *.md
 !README.md
+
+!.env.qa.example
+/.qa-tmp
+/test-results/
+/supabase/.temp/

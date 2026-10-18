@@ -993,6 +993,41 @@ export type Database = {
           net_profit: number
         }
       }
+      rpc_get_dashboard_summary: {
+        Args: {
+          p_is_owner?: boolean
+          p_month_prefix?: string
+          p_today?: string
+        }
+        Returns: {
+          stocks: Array<{
+            product_id: string
+            gudang_isi: number
+            gudang_kosong: number
+            gudang_bocor: number
+            dipinjam_mitra: number
+            products: {
+              id: string
+              name: string
+              buy_price: number
+              sell_price: number
+              is_active: boolean
+            }
+          }>
+          receivables: {
+            total_piutang: number
+            overdue_count: number
+            pending_count: number
+          }
+          financials: {
+            kas_laci?: number
+            kas_bank?: number
+            omzet_bulan_ini?: number
+            kas_masuk_bulan_ini?: number
+          }
+          recent_transactions: Array<any>
+        }
+      }
     }
     Enums: {
       [_ in never]: never

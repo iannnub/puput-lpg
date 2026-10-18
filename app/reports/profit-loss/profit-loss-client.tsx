@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import ExcelJS from 'exceljs'
 import type { ProfitLossReportData } from './queries'
 import { formatRupiah } from '@/lib/utils/format-currency'
 
@@ -40,6 +39,7 @@ export function ProfitLossClient({ month, year, report }: ProfitLossClientProps)
   }
 
   async function handleExportExcel() {
+    const ExcelJS = (await import('exceljs')).default
     const workbook = new ExcelJS.Workbook()
     const worksheet = workbook.addWorksheet('Laba Rugi')
 

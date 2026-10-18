@@ -30,6 +30,13 @@ export async function loginAction(email: string, password: string) {
     }
   }
 
+  // Sinkronisasi metadata peran agar middleware bisa langsung membaca tanpa query database
+  if (data.user.user_metadata?.role !== profile.role) {
+    await supabase.auth.updateUser({
+      data: { role: profile.role, is_active: profile.is_active }
+    })
+  }
+
   if (profile.role === 'owner') {
     const { data: settings } = await supabase
       .from('app_settings')

@@ -31,7 +31,8 @@ async function seedUser(
       email,
       password,
       email_confirm: true,
-      user_metadata: { full_name: fullName }
+      app_metadata: { role, is_active: true },
+      user_metadata: { full_name: fullName, role, is_active: true }
     })
     if (error) throw error
     userId = data.user.id
@@ -40,7 +41,8 @@ async function seedUser(
     const { error: updateErr } = await supabaseAdmin.auth.admin.updateUserById(userId, {
       password,
       email_confirm: true,
-      user_metadata: { full_name: fullName }
+      app_metadata: { role, is_active: true },
+      user_metadata: { full_name: fullName, role, is_active: true }
     })
     if (updateErr) throw updateErr
   }

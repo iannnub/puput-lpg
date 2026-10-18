@@ -1,7 +1,6 @@
 'use client'
 
 import * as React from 'react'
-import imageCompression from 'browser-image-compression'
 import { createClient } from '@/lib/supabase/client'
 import { getWibTodayString } from '@/lib/utils/date-wib'
 import { Button } from '@/components/ui/button'
@@ -19,6 +18,7 @@ export async function uploadCompressedProof(
     throw new Error('Ukuran file asli maksimal 5MB')
   }
 
+  const imageCompression = (await import('browser-image-compression')).default
   const compressedFile = await imageCompression(file, {
     maxSizeMB: 0.1, // Target ~100KB
     maxWidthOrHeight: 1920,

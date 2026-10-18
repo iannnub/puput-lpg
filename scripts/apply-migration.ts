@@ -68,8 +68,17 @@ async function connectToDb(): Promise<Client> {
 }
 
 async function main() {
+  const specificFile = process.argv[2]
   const client = await connectToDb()
   try {
+    if (specificFile) {
+      console.log(`Applying specific migration ${specificFile}...`)
+      const sql = readFileSync(join(process.cwd(), specificFile), 'utf8')
+      await client.query(sql)
+      console.log(`Migration ${specificFile} applied successfully.`)
+      return
+    }
+
     const migrationSql = readFileSync(
       join(process.cwd(), 'supabase', 'migrations', '20261016_initial_schema.sql'),
       'utf8'

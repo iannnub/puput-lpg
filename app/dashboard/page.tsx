@@ -28,80 +28,17 @@ export default async function DashboardPage({
   const todayWib = getWibTodayString()
   const monthPrefix = todayWib.slice(0, 7)
 
-  // 1. Ambil stok produk aktif
-  const { data: stocksData } = await supabase
-    .from('stocks')
-    .select('*, products!inner(id, name, buy_price, sell_price, is_active)')
-    .eq('products.is_active', true)
-    .order('updated_at', { ascending: true })
-
-  // 2. Ambil piutang aktif (exclude voided)
-  const { data: activeReceivables } = await supabase
-    .from('transactions')
-    .select('id, total_amount, total_paid, due_date, payment_status')
-    .neq('payment_status', 'lunas')
-    .is('voided_at', null)
-
-  let totalPiutang = 0
-  let overdueCount = 0
-  for (const tx of activeReceivables ?? []) {
-    const remaining = Number(tx.total_amount) - Number(tx.total_paid)
-    if (remaining > 0) {
-      totalPiutang += remaining
-      if (tx.due_date && tx.due_date < todayWib) {
-        overdueCount += 1
-      }
+  // 1. Ambil seluruh data ringkasan dashboard dalam 1 RPC query teragregasi
+  const { data: summaryData, error: summaryErr } = await supabase.rpc(
+    'rpc_get_dashboard_summary',
+    {
+      p_is_owner: isOwner,
+      p_month_prefix: monthPrefix,
+      p_today: todayWib
     }
-  }
+  )
 
-  // 3. Khusus Owner: ambil saldo kas via RPC get_cash_balance & omzet bulan ini
-  let kasLaci = 0
-  let kasBank = 0
-  let omzetBulanIni = 0
-  let kasMasukBulanIni = 0
-
-  if (isOwner) {
-    const [resLaci, resBank, resMonthSales, resMonthPayments] = await Promise.all([
-      supabase.rpc('get_cash_balance', { p_source: 'kas_laci' }),
-      supabase.rpc('get_cash_balance', { p_source: 'kas_bank' }),
-      supabase
-        .from('transactions')
-        .select('total_amount')
-        .gte('transaction_date', `${monthPrefix}-01`)
-        .lte('transaction_date', `${monthPrefix}-31`)
-        .is('voided_at', null)
-        .eq('is_legacy', false),
-      supabase
-        .from('payments')
-        .select('amount, transactions!inner(voided_at, is_legacy)')
-        .gte('payment_date', `${monthPrefix}-01`)
-        .lte('payment_date', `${monthPrefix}-31`)
-        .is('transactions.voided_at', null)
-        .eq('transactions.is_legacy', false)
-    ])
-
-    kasLaci = Number(resLaci.data ?? 0)
-    kasBank = Number(resBank.data ?? 0)
-    omzetBulanIni = (resMonthSales.data ?? []).reduce(
-      (sum, row) => sum + Number(row.total_amount),
-      0
-    )
-    kasMasukBulanIni = (resMonthPayments.data ?? []).reduce(
-      (sum, row) => sum + Number(row.amount),
-      0
-    )
-  }
-
-  // 4. Transaksi terakhir (10 baris terbaru)
-  const { data: recentTransactions } = await supabase
-    .from('transactions')
-    .select(
-      'id, invoice_number, transaction_date, total_amount, total_paid, payment_status, due_date, voided_at, is_legacy, mitras(name)'
-    )
-    .order('created_at', { ascending: false })
-    .limit(10)
-
-  const stocks = (stocksData ?? []) as Array<{
+  let stocks = ((summaryData as any)?.stocks ?? []) as Array<{
     product_id: string
     gudang_isi: number
     gudang_kosong: number
@@ -115,6 +52,86 @@ export default async function DashboardPage({
       is_active: boolean
     }
   }>
+
+  let totalPiutang = Number((summaryData as any)?.receivables?.total_piutang ?? 0)
+  let overdueCount = Number((summaryData as any)?.receivables?.overdue_count ?? 0)
+  let pendingCount = Number((summaryData as any)?.receivables?.pending_count ?? 0)
+  let kasLaci = Number((summaryData as any)?.financials?.kas_laci ?? 0)
+  let kasBank = Number((summaryData as any)?.financials?.kas_bank ?? 0)
+  let omzetBulanIni = Number((summaryData as any)?.financials?.omzet_bulan_ini ?? 0)
+  let kasMasukBulanIni = Number((summaryData as any)?.financials?.kas_masuk_bulan_ini ?? 0)
+  let recentTransactions = ((summaryData as any)?.recent_transactions ?? []) as any[]
+
+  // Fallback ke query bertahap jika RPC mengalami kendala
+  if (summaryErr || !summaryData) {
+    const { data: stocksData } = await supabase
+      .from('stocks')
+      .select('*, products!inner(id, name, buy_price, sell_price, is_active)')
+      .eq('products.is_active', true)
+      .order('updated_at', { ascending: true })
+
+    const { data: activeReceivables } = await supabase
+      .from('transactions')
+      .select('id, total_amount, total_paid, due_date, payment_status')
+      .neq('payment_status', 'lunas')
+      .is('voided_at', null)
+
+    totalPiutang = 0
+    overdueCount = 0
+    for (const tx of activeReceivables ?? []) {
+      const remaining = Number(tx.total_amount) - Number(tx.total_paid)
+      if (remaining > 0) {
+        totalPiutang += remaining
+        if (tx.due_date && tx.due_date < todayWib) {
+          overdueCount += 1
+        }
+      }
+    }
+    pendingCount = (activeReceivables ?? []).length
+
+    if (isOwner) {
+      const [resLaci, resBank, resMonthSales, resMonthPayments] = await Promise.all([
+        supabase.rpc('get_cash_balance', { p_source: 'kas_laci' }),
+        supabase.rpc('get_cash_balance', { p_source: 'kas_bank' }),
+        supabase
+          .from('transactions')
+          .select('total_amount')
+          .gte('transaction_date', `${monthPrefix}-01`)
+          .lte('transaction_date', `${monthPrefix}-31`)
+          .is('voided_at', null)
+          .eq('is_legacy', false),
+        supabase
+          .from('payments')
+          .select('amount, transactions!inner(voided_at, is_legacy)')
+          .gte('payment_date', `${monthPrefix}-01`)
+          .lte('payment_date', `${monthPrefix}-31`)
+          .is('transactions.voided_at', null)
+          .eq('transactions.is_legacy', false)
+      ])
+
+      kasLaci = Number(resLaci.data ?? 0)
+      kasBank = Number(resBank.data ?? 0)
+      omzetBulanIni = (resMonthSales.data ?? []).reduce(
+        (sum, row) => sum + Number(row.total_amount),
+        0
+      )
+      kasMasukBulanIni = (resMonthPayments.data ?? []).reduce(
+        (sum, row) => sum + Number(row.amount),
+        0
+      )
+    }
+
+    const { data: recents } = await supabase
+      .from('transactions')
+      .select(
+        'id, invoice_number, transaction_date, total_amount, total_paid, payment_status, due_date, voided_at, is_legacy, mitras(name)'
+      )
+      .order('created_at', { ascending: false })
+      .limit(10)
+
+    recentTransactions = recents ?? []
+    stocks = (stocksData ?? []) as any
+  }
 
   return (
     <AppShell activePath="/dashboard">
@@ -222,7 +239,7 @@ export default async function DashboardPage({
               {formatRupiah(totalPiutang)}
             </div>
             <div className="mt-2 flex items-center justify-between text-xs text-slate-600">
-              <span>{activeReceivables?.length ?? 0} nota belum lunas</span>
+              <span>{pendingCount} nota belum lunas</span>
               <Link
                 href="/transactions/piutang"
                 className="font-semibold text-secondary hover:underline"
