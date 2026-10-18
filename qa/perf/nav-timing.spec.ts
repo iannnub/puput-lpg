@@ -7,7 +7,8 @@ const qa = loadQaEnv()
 
 test('Measure navigation timing between routes', async ({ page }) => {
   test.setTimeout(180000)
-  await page.goto(`${qa.baseUrl}/login`)
+  await page.setViewportSize({ width: 1280, height: 800 })
+  await page.goto(`${qa.baseUrl}/login`, { waitUntil: 'networkidle' })
   await page.locator('#email').fill(qa.owner.email)
   await page.locator('#password').fill(qa.owner.password)
   await page.getByRole('button', { name: /masuk/i }).click()
@@ -25,7 +26,7 @@ test('Measure navigation timing between routes', async ({ page }) => {
 
   for (const pair of pairs) {
     await page.goto(`${qa.baseUrl}${pair.from}`, { waitUntil: 'load' })
-    const link = page.locator(`a[href="${pair.to}"]`).first()
+    const link = page.locator(`a[href="${pair.to}"]:visible`).first()
     if (await link.count() === 0) continue
 
     const t0 = performance.now()
