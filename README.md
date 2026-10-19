@@ -42,8 +42,8 @@ Aplikasi web operasional dan akuntansi terintegrasi untuk Pangkalan / Agen Distr
 
 ## 2. Fitur Utama (Flow 0 – Flow 6)
 
-### Flow 0 — Onboarding & Migrasi Saldo Awal (`/onboarding`)
-- Hanya dapat dijalankan **satu kali** oleh **Owner** saat sistem pertama kali digunakan (`app_settings.onboarding_completed = false`).
+### Flow 0 — Pengaturan Saldo & Stok Awal (`/onboarding`)
+- Dijalankan oleh **Owner** saat pertama kali menggunakan sistem dan dapat disesuaikan kembali kapan saja jika terdapat kekeliruan pencatatan.
 - Mengatur nama, alamat, dan nomor telepon pangkalan.
 - Mencatat saldo awal Kas Tunai Laci (`kas_laci`) dan Kas Rekening Bank (`kas_bank`).
 - Mencatat stok fisik awal per produk (`gudang_isi`, `gudang_kosong`, `gudang_bocor`).
@@ -51,6 +51,7 @@ Aplikasi web operasional dan akuntansi terintegrasi untuk Pangkalan / Agen Distr
 
 ### Flow 1 — Autentikasi & Proteksi Role (`/login` & `middleware.ts`)
 - Autentikasi berbasis cookie SSR menggunakan `@supabase/ssr`.
+- Mendukung login langsung menggunakan **Username** (`adminlpg` / `staff`) maupun alamat email lengkap.
 - Proteksi rute otomatis di level Middleware Next.js dan validasi berlapis di dalam fungsi SQL RPC (`public.is_owner()` dan `public.is_staff_or_owner()`).
 
 ### Flow 2 — Master Data (`/products`, `/mitras`, `/employees`)
@@ -78,7 +79,7 @@ Aplikasi web operasional dan akuntansi terintegrasi untuk Pangkalan / Agen Distr
 - **Cetak Nota / Invoice PDF A5 (`/api/invoice/[id]`):** Menghasilkan dokumen PDF setengah halaman A4 siap cetak untuk surat jalan dan bukti tagihan.
 - **Pengembalian Tabung Kosong Susulan (`/transactions/susulan`):** Mencatat pengembalian tabung kosong yang sebelumnya dipinjam mitra (`dipinjam_mitra` berkurang, `gudang_kosong` bertambah).
 - **Pelunasan Piutang & Cicilan (`/transactions/piutang`):** Pencatatan pembayaran piutang mitra (Tunai Laci atau Transfer Bank) beserta bukti transfer ke private bucket `payment-proofs`.
-- **Void Transaksi Atomik (`/transactions/[id]` - Khusus Owner):** Membatalkan nota yang salah input secara atomik (mengembalikan stok 4-keranjang, membalik saldo pinjaman tabung mitra, membuat jurnal kas balik `out_void_refund`, dan menolak void apabila bonus supir periode tersebut sudah dibayarkan).
+- **Void Transaksi (`/transactions/[id]` - Khusus Owner):** Membatalkan nota yang salah input (mengembalikan stok 4-keranjang, membalik saldo pinjaman tabung mitra, membuat jurnal kas balik `out_void_refund`, dan menolak void apabila bonus supir periode tersebut sudah dibayarkan).
 
 ### Flow 5 — Kasbon FIFO, Penggajian Karyawan, & Buku Kas (`/payroll/*`, `/cashflow`)
 - **Manajemen Kasbon Karyawan (`/payroll/kasbon`):** Pencairan kasbon karyawan dari Kas Laci atau Kas Bank.
@@ -96,11 +97,18 @@ Aplikasi web operasional dan akuntansi terintegrasi untuk Pangkalan / Agen Distr
 
 ## 3. Hak Akses (RBAC) & Manajemen Akun Login
 
-Sistem membedakan dua level hak akses pengguna:
+### Kredensial Login Bawaan (Default Credentials)
+
+| Peran (Role) | Username / Email | Password | Hak Akses |
+| :--- | :--- | :--- | :--- |
+| **Owner / Admin** | `adminlpg` *(atau `adminlpg@pangkalan.local`)* | `adminlpg123` | Akses penuh seluruh modul, laporan laba rugi, kas, payroll, & pengaturan |
+| **Staff / Kasir** | `staff` *(atau `staff@pangkalan.local`)* | `staff123` | Akses kasir transaksi penjualan, stok gudang, dan pelunasan piutang |
+
+> **Catatan:** Form login menerima input **Username** secara langsung tanpa perlu mengetikkan domain email.
 
 | Modul / Fitur | Role `owner` (Admin Utama) | Role `staff` (Kasir & Gudang) |
-| :--- | :---: | :---: |
-| Onboarding Saldo & Stok Awal (`/onboarding`) | Akses Penuh (1x) | Diblokir |
+| :--- | :--- | :--- |
+| Pengaturan Saldo & Stok Awal (`/onboarding`) | Akses Penuh (Dapat disesuaikan kembali) | Diblokir |
 | Dashboard Operasional (`/dashboard`) | Akses Penuh (Stok, Piutang, Kas, Omzet) | Terbatas (Hanya Stok & Peringatan Operasional) |
 | Kasir Penjualan, Susulan Tabung, & Pelunasan Piutang (`/transactions/*`) | Akses Penuh | Akses Penuh (Tanggal dibatasi maks. H-3) |
 | Void Transaksi & Override Tempo Terkunci | Akses Penuh | Memerlukan Otorisasi Kredensial Owner |
@@ -114,11 +122,11 @@ Sistem membedakan dua level hak akses pengguna:
 
 ### Cara Membuat & Mengelola Akun Login Baru (`Staff` / `Owner`)
 Pembuatan akun role lainnya dilakukan **langsung oleh Owner (Admin) dari dalam aplikasi web**:
-1. Login menggunakan akun **Owner**.
+1. Login menggunakan akun **Owner** (`adminlpg` / `adminlpg123`).
 2. Buka menu **Karyawan** (`/employees`) pada navigasi samping.
 3. Gulir ke bagian **Manajemen Akun Login Aplikasi (Role Owner & Staff)**.
 4. Klik tombol **Tambah Akun Login**, lalu masukkan:
-   - Email Login (misal: `kasir2@pangkalan.local`)
+   - Email / Username Login (misal: `kasir2@pangkalan.local`)
    - Nama Lengkap Pengguna
    - Hak Akses Role (`Staff` untuk Kasir/Gudang, atau `Owner` untuk pemilik)
    - Password Login (minimal 6 karakter)
