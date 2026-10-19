@@ -82,7 +82,8 @@ export async function middleware(request: NextRequest) {
     '/payroll',
     '/reports',
     '/cashflow',
-    '/stocks/opname'
+    '/stocks/opname',
+    '/api/payroll'
   ]
   const isOwnerPath = ownerOnlyPaths.some(p => pathname.startsWith(p))
 

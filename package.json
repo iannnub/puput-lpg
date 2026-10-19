@@ -12,7 +12,8 @@
     "db:seed-users": "tsx scripts/seed-users.ts",
     "db:clean": "tsx scripts/clean-dummy-data.ts",
     "test:race": "tsx scripts/test-race-condition.ts",
-    "test:suite": "tsx scripts/test-phase6-suite.ts"
+    "test:suite": "tsx scripts/test-phase6-suite.ts",
+    "test:unit": "tsx --test tests/unit-tests.test.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
