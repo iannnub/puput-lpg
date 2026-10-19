@@ -35,8 +35,7 @@ interface AppShellProps {
 
 export async function AppShell({ children, activePath = '' }: AppShellProps) {
   const { profile, isOwner, settings } = await getAuthenticatedContext()
-  const onboardingCompleted = Boolean(settings?.onboarding_completed)
-  const navItems = getVisibleNavItems(isOwner, onboardingCompleted)
+  const navItems = getVisibleNavItems(isOwner)
   const businessName = settings?.business_name || process.env.NEXT_PUBLIC_BUSINESS_NAME || 'Puput LPG'
 
   return (
@@ -47,7 +46,7 @@ export async function AppShell({ children, activePath = '' }: AppShellProps) {
         fullName={profile.full_name}
         email={profile.email}
         isOwner={isOwner}
-        onboardingCompleted={onboardingCompleted}
+        onboardingCompleted={Boolean(settings?.onboarding_completed)}
       />
 
       {/* Desktop Header (layar >= 768px / hidden md:block) */}
@@ -69,7 +68,7 @@ export async function AppShell({ children, activePath = '' }: AppShellProps) {
                 {businessName}
               </div>
               <div className="text-xs text-slate-600">
-                Sistem Distribusi & Buku Besar Operasional
+                Sistem Distribusi & Manajemen Pangkalan
               </div>
             </div>
           </div>

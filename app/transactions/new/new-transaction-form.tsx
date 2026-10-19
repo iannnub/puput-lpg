@@ -321,8 +321,7 @@ export function NewTransactionForm({
         <div>
           <h1 className="text-2xl font-bold text-slate-900">Transaksi Penjualan Baru</h1>
           <p className="text-sm text-slate-600">
-            Pengiriman multi-produk dalam 1 surat jalan, serah terima tabung kosong, dan pencatatan
-            kas/piutang secara atomic.
+            Catat pengiriman barang, serah terima tabung kosong, dan pembayaran lunas atau tempo.
           </p>
         </div>
       </div>
@@ -747,7 +746,7 @@ export function NewTransactionForm({
             </Button>
           </Link>
           <Button type="submit" disabled={submitting}>
-            {submitting ? 'Menyimpan Transaksi Secara Atomic...' : 'Simpan Transaksi'}
+            {submitting ? 'Menyimpan Transaksi...' : 'Simpan Transaksi'}
           </Button>
         </div>
       </form>

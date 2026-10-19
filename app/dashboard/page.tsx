@@ -170,16 +170,15 @@ export default async function DashboardPage({
         <Alert variant="warning">
           <AlertTitle className="flex items-center gap-2">
             <AlertTriangle className="h-4 w-4 shrink-0" />
-            <span>Setup Awal Sistem (Onboarding) Belum Dijalankan</span>
+            <span>Pengaturan Saldo & Stok Awal Belum Diisi</span>
           </AlertTitle>
           <AlertDescription className="mt-2 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <span>
-              Anda dapat menginput saldo kas awal, stok fisik gudang awal, dan piutang/pinjaman
-              tabung lama secara atomic sebelum memulai operasional.
+              Masukkan posisi kas riil, stok tabung di gudang, dan catatan piutang lama agar pembukuan dimulai dengan angka yang tepat.
             </span>
             <Link href="/onboarding">
               <Button size="sm" variant="warning">
-                <span>Buka Setup Awal</span>
+                <span>Isi Pengaturan Awal</span>
                 <ArrowRight className="h-4 w-4" />
               </Button>
             </Link>

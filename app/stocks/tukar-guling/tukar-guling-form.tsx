@@ -100,8 +100,7 @@ export function TukarGulingForm({ mitras, products }: TukarGulingFormProps) {
         <CardHeader>
           <CardTitle>Formulir Tukar Guling Tabung Bocor</CardTitle>
           <CardDescription>
-            Stok Gudang Isi berkurang dan Stok Gudang Bocor bertambah secara atomic tanpa mengubah
-            saldo kas maupun piutang mitra.
+            Tukar tabung bocor dari mitra dengan tabung isi yang baik tanpa mengubah saldo pembayaran.
           </CardDescription>
         </CardHeader>
         <CardContent>

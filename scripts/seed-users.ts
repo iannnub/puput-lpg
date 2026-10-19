@@ -60,15 +60,16 @@ async function seedUser(
 }
 
 async function main() {
-  const ownerPw = process.env.SEED_OWNER_PASSWORD
-  const staffPw = process.env.SEED_STAFF_PASSWORD
+  const adminPw = process.env.SEED_OWNER_PASSWORD || 'adminlpg123'
+  const staffPw = process.env.SEED_STAFF_PASSWORD || 'staff123'
 
-  if (!ownerPw || !staffPw) {
-    throw new Error('Set SEED_OWNER_PASSWORD and SEED_STAFF_PASSWORD in .env.local before running seed-users')
-  }
+  // Admin / Owner
+  await seedUser('adminlpg@pangkalan.local', adminPw, 'owner', 'Admin Pangkalan LPG')
+  await seedUser('owner@pangkalan.local', adminPw, 'owner', 'Owner Pangkalan')
 
-  await seedUser('owner@pangkalan.local', ownerPw, 'owner', 'Owner Pangkalan')
+  // Staff
   await seedUser('staff@pangkalan.local', staffPw, 'staff', 'Staff Gudang')
+  await seedUser('stafflpg@pangkalan.local', staffPw, 'staff', 'Staff Gudang')
 }
 
 main().catch(err => {

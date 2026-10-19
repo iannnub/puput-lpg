@@ -429,8 +429,7 @@ export function TransactionDetailClient({
           <DialogHeader>
             <DialogTitle>Void Transaksi: {transaction.invoice_number}</DialogTitle>
             <DialogDescription>
-              Stok gudang, saldo pinjaman tabung mitra, dan mutasi kas akan dikembalikan secara
-              atomic.
+              Stok gudang, pinjaman tabung mitra, dan catatan pembayaran akan dipulihkan seperti semula.
             </DialogDescription>
           </DialogHeader>
           <form onSubmit={handleVoid} className="space-y-4">

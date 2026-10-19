@@ -63,9 +63,9 @@ export default async function StocksDashboardPage() {
     <AppShell activePath="/stocks">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Manajemen Stok Gudang Real-Time</h1>
+          <h1 className="text-2xl font-bold text-slate-900">Manajemen Stok Gudang</h1>
           <p className="text-sm text-slate-600">
-            Seluruh mutasi stok isi, kosong, bocor, dan pinjaman mitra dicatat secara atomic.
+            Pantau ketersediaan tabung isi, kosong, bocor, dan pinjaman mitra secara langsung.
           </p>
         </div>
 

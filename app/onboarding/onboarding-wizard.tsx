@@ -27,19 +27,36 @@ interface OnboardingWizardProps {
   products: ProductItem[]
   mitras: MitraItem[]
   defaultDate: string
+  isCompleted?: boolean
+  initialKasLaci?: number
+  initialKasBank?: number
+  initialStocks?: Array<{
+    product_id: string
+    gudang_isi: number
+    gudang_kosong: number
+    gudang_bocor: number
+  }>
 }
 
-export function OnboardingWizard({ products, mitras, defaultDate }: OnboardingWizardProps) {
+export function OnboardingWizard({
+  products,
+  mitras,
+  defaultDate,
+  isCompleted = false,
+  initialKasLaci = 0,
+  initialKasBank = 0,
+  initialStocks = []
+}: OnboardingWizardProps) {
   const router = useRouter()
   const [step, setStep] = React.useState<1 | 2 | 3>(1)
   const [submitting, setSubmitting] = React.useState(false)
   const [errorMsg, setErrorMsg] = React.useState<string | null>(null)
 
   // Step 1: Kas Awal
-  const [kasLaci, setKasLaci] = React.useState<number>(0)
-  const [kasBank, setKasBank] = React.useState<number>(0)
+  const [kasLaci, setKasLaci] = React.useState<number>(initialKasLaci)
+  const [kasBank, setKasBank] = React.useState<number>(initialKasBank)
   const [tanggal, setTanggal] = React.useState<string>(defaultDate)
-  const [catatan, setCatatan] = React.useState<string>('Migrasi pembukuan awal sistem')
+  const [catatan, setCatatan] = React.useState<string>('Pencatatan saldo dan stok awal')
 
   // Step 2: Stok Awal
   const [stokMap, setStokMap] = React.useState<
@@ -47,7 +64,12 @@ export function OnboardingWizard({ products, mitras, defaultDate }: OnboardingWi
   >(() => {
     const init: Record<string, { isi: number; kosong: number; bocor: number }> = {}
     for (const p of products) {
-      init[p.id] = { isi: 0, kosong: 0, bocor: 0 }
+      const found = initialStocks.find(s => s.product_id === p.id)
+      init[p.id] = {
+        isi: found?.gudang_isi ?? 0,
+        kosong: found?.gudang_kosong ?? 0,
+        bocor: found?.gudang_bocor ?? 0
+      }
     }
     return init
   })
@@ -497,8 +519,10 @@ export function OnboardingWizard({ products, mitras, defaultDate }: OnboardingWi
               </Button>
               <Button type="button" onClick={handleSubmit} disabled={submitting}>
                 {submitting
-                  ? 'Menyimpan Setup Awal Secara Atomic...'
-                  : 'Simpan & Kunci Setup Awal Sistem'}
+                  ? 'Menyimpan Data...'
+                  : isCompleted
+                  ? 'Simpan Perubahan Pengaturan'
+                  : 'Simpan Pengaturan Awal'}
               </Button>
             </div>
           </CardContent>

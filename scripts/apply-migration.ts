@@ -79,18 +79,21 @@ async function main() {
       return
     }
 
-    const migrationSql = readFileSync(
-      join(process.cwd(), 'supabase', 'migrations', '20261016_initial_schema.sql'),
-      'utf8'
-    )
-    console.log('Applying migration 20261016_initial_schema.sql...')
+    const targetFile = process.argv[2]
+      ? join(process.cwd(), process.argv[2])
+      : join(process.cwd(), 'supabase', 'migrations', '20261016_initial_schema.sql')
+
+    console.log(`Applying migration ${targetFile}...`)
+    const migrationSql = readFileSync(targetFile, 'utf8')
     await client.query(migrationSql)
     console.log('Migration applied successfully.')
 
-    const seedSql = readFileSync(join(process.cwd(), 'supabase', 'seed.sql'), 'utf8')
-    console.log('Applying seed.sql...')
-    await client.query(seedSql)
-    console.log('Seed SQL applied successfully.')
+    if (!process.argv[2]) {
+      const seedSql = readFileSync(join(process.cwd(), 'supabase', 'seed.sql'), 'utf8')
+      console.log('Applying seed.sql...')
+      await client.query(seedSql)
+      console.log('Seed SQL applied successfully.')
+    }
 
     await client.query(`
       CREATE SCHEMA IF NOT EXISTS supabase_migrations;

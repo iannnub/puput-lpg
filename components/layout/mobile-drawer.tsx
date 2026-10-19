@@ -15,7 +15,7 @@ interface MobileDrawerProps {
   fullName: string
   email: string
   isOwner: boolean
-  onboardingCompleted: boolean
+  onboardingCompleted?: boolean
 }
 
 export function MobileDrawer({
@@ -23,7 +23,7 @@ export function MobileDrawer({
   fullName,
   email,
   isOwner,
-  onboardingCompleted
+  onboardingCompleted = true
 }: MobileDrawerProps) {
   const [isOpen, setIsOpen] = React.useState(false)
   const pathname = usePathname()
@@ -58,7 +58,6 @@ export function MobileDrawer({
 
   const visibleItems = APP_NAV_ITEMS.filter(item => {
     if (item.ownerOnly && !isOwner) return false
-    if (item.requiresIncompleteOnboarding && onboardingCompleted) return false
     return true
   })
 

@@ -110,8 +110,7 @@ export function SusulanForm({ mitras, products, borrowedByMitra }: SusulanFormPr
         <CardHeader>
           <CardTitle>Formulir Pengembalian Tabung Kosong Susulan</CardTitle>
           <CardDescription>
-            Stok Gudang Kosong bertambah dan Saldo Pinjaman Mitra berkurang secara atomic melalui{' '}
-            <code>rpc_receive_susulan</code>.
+            Catat pengembalian tabung kosong dari mitra yang menyusul di luar transaksi harian.
           </CardDescription>
         </CardHeader>
         <CardContent>

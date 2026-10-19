@@ -110,7 +110,7 @@ export function RestockForm({ products }: RestockFormProps) {
         <CardHeader>
           <CardTitle>Formulir Restock Gudang</CardTitle>
           <CardDescription>
-            Perhitungan total bayar dihitung ulang dan divalidasi secara atomic di database.
+            Catat pasokan tabung baru, tukar tabung kosong, atau klaim garansi tabung bocor.
           </CardDescription>
         </CardHeader>
         <CardContent>

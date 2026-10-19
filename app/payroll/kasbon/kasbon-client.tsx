@@ -233,7 +233,7 @@ export function KasbonClient({ employees, kasbons, defaultDate }: KasbonClientPr
           <DialogHeader>
             <DialogTitle>Catat Pencairan Kasbon Karyawan</DialogTitle>
             <DialogDescription>
-              Mencatat piutang kasbon karyawan dan memotong saldo kas yang dipilih secara atomic.
+              Catat pinjaman kasbon karyawan dan otomatis memotong saldo kas yang dipilih.
             </DialogDescription>
           </DialogHeader>
 

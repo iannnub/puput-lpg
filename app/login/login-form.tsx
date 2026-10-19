@@ -34,13 +34,13 @@ export function LoginForm({ initialError }: { initialError?: string }) {
       )}
 
       <div className="space-y-2">
-        <Label htmlFor="email">Email</Label>
+        <Label htmlFor="identifier">Username atau Email</Label>
         <Input
-          id="email"
-          type="email"
+          id="identifier"
+          type="text"
           required
-          autoComplete="email"
-          placeholder="owner@pangkalan.local"
+          autoComplete="username"
+          placeholder="adminlpg"
           value={email}
           onChange={e => setEmail(e.target.value)}
           disabled={isPending}

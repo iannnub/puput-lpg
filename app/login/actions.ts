@@ -3,17 +3,32 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 
-export async function loginAction(email: string, password: string) {
+export async function loginAction(identifier: string, password: string) {
   const supabase = await createClient()
 
+  const cleanId = identifier.trim().toLowerCase()
+  let targetEmail = cleanId
+
+  if (!targetEmail.includes('@')) {
+    if (cleanId === 'admin' || cleanId === 'adminlpg') {
+      targetEmail = 'adminlpg@pangkalan.local'
+    } else if (cleanId === 'owner') {
+      targetEmail = 'owner@pangkalan.local'
+    } else if (cleanId === 'staff' || cleanId === 'stafflpg') {
+      targetEmail = 'staff@pangkalan.local'
+    } else {
+      targetEmail = `${cleanId}@pangkalan.local`
+    }
+  }
+
   const { data, error } = await supabase.auth.signInWithPassword({
-    email: email.trim(),
+    email: targetEmail,
     password
   })
 
   if (error || !data.user) {
     return {
-      error: 'Email atau password salah, atau terlalu banyak percobaan login.'
+      error: 'Username atau password salah. Silakan periksa kembali.'
     }
   }
 

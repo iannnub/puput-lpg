@@ -69,7 +69,7 @@ export function BocorForm({ products }: { products: BocorProductOption[] }) {
         <div>
           <h1 className="text-2xl font-bold text-slate-900">Lapor Tabung Bocor di Gudang</h1>
           <p className="text-sm text-slate-600">
-            Memindahkan status tabung dari Gudang Isi menjadi Gudang Bocor secara atomic.
+            Pindahkan catatan tabung dari Gudang Isi menjadi Gudang Bocor untuk persiapan klaim retur.
           </p>
         </div>
       </div>

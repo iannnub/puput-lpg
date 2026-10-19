@@ -99,7 +99,7 @@ export function TransactionsClient({
         setErrorMsg(res.error)
       } else {
         setSuccessMsg(
-          `Transaksi ${voidTarget.invoice_number} berhasil di-void. Stok, pinjaman tabung, dan arus kas telah dikembalikan secara atomic.`
+          `Transaksi ${voidTarget.invoice_number} berhasil dibatalkan. Stok, pinjaman tabung, dan catatan pembayaran telah dipulihkan.`
         )
         setVoidTarget(null)
         setVoidReason('')
@@ -115,11 +115,10 @@ export function TransactionsClient({
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold text-slate-900">
-            Daftar Transaksi & Pengelolaan Piutang
+            Daftar Transaksi & Piutang
           </h1>
           <p className="text-sm text-slate-600">
-            Demi integritas buku besar (ledger), transaksi tidak dapat diedit; gunakan fitur Void
-            bila terjadi kesalahan input.
+            Riwayat seluruh penjualan. Jika ada kekeliruan nota, transaksi dapat dibatalkan melalui fitur Pembatalan (Void).
           </p>
         </div>
 
