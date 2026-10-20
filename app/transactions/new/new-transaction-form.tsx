@@ -657,8 +657,12 @@ export function NewTransactionForm({
                         type="number"
                         min={0}
                         max={totalTagihan}
-                        value={dpAmount}
-                        onChange={e => setDpAmount(Number(e.target.value))}
+                        value={dpAmount === 0 ? '' : dpAmount}
+                        placeholder="0"
+                        onChange={e => {
+                          const raw = e.target.value.replace(/^0+(?=\d)/, '')
+                          setDpAmount(raw === '' ? 0 : Number(raw))
+                        }}
                         className="bg-white tabular-nums"
                       />
                     </div>

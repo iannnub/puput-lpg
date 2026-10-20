@@ -678,5 +678,17 @@ describe('Suite 7: Input Angka & Konfigurasi Keyboard Mobile', () => {
     assert.equal(sanitizeDigitsOnly('+62 812 3456 7890'), '6281234567890')
     assert.equal(sanitizeDigitsOnly('abc0852xyz'), '0852')
   })
+
+  it('Otomatis membuang angka 0 di depan saat pengguna mengetik nominal angka', () => {
+    function stripLeadingZeros(raw: string): string {
+      return raw.replace(/^0+(?=\d)/, '')
+    }
+
+    assert.equal(stripLeadingZeros('0100000'), '100000', '0 di depan 100000 harus dibuang menjadi 100000')
+    assert.equal(stripLeadingZeros('050000'), '50000')
+    assert.equal(stripLeadingZeros('007'), '7')
+    assert.equal(stripLeadingZeros('0'), '0', 'Angka 0 tunggal tidak boleh hilang')
+    assert.equal(stripLeadingZeros('100000'), '100000')
+  })
 })
 

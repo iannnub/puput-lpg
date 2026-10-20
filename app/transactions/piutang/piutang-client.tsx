@@ -362,8 +362,12 @@ export function PiutangClient({ items, defaultDate }: PiutangClientProps) {
                   type="number"
                   min={1}
                   max={selectedTx?.remaining ?? 0}
-                  value={amount}
-                  onChange={e => setAmount(Number(e.target.value))}
+                  value={amount === 0 ? '' : amount}
+                  placeholder="0"
+                  onChange={e => {
+                    const raw = e.target.value.replace(/^0+(?=\d)/, '')
+                    setAmount(raw === '' ? 0 : Number(raw))
+                  }}
                   className="tabular-nums"
                   required
                 />

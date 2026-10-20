@@ -4,6 +4,7 @@ import { cn } from '@/lib/utils/cn'
 export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   numericOnly?: boolean
   allowDecimal?: boolean
+  autoSelectOnFocus?: boolean
 }
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
@@ -15,7 +16,10 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       pattern,
       numericOnly,
       allowDecimal = false,
+      autoSelectOnFocus = true,
       onKeyDown,
+      onChange,
+      onFocus,
       onWheel,
       ...props
     },
@@ -69,6 +73,24 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       onKeyDown?.(e)
     }
 
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (isNumeric && !allowDecimal) {
+        // Otomatis buang angka 0 di depan jika diikuti angka lain (misal user mengetik di sebelah 0: '0100000' -> '100000')
+        if (e.target.value.length > 1 && /^0\d+/.test(e.target.value)) {
+          e.target.value = e.target.value.replace(/^0+(?=\d)/, '')
+        }
+      }
+      onChange?.(e)
+    }
+
+    const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+      // Ketika input angka diklik/difokuskan, otomatis seleksi teks agar angka default (seperti 0) langsung tertimpa
+      if (isNumeric && autoSelectOnFocus) {
+        e.target.select()
+      }
+      onFocus?.(e)
+    }
+
     const handleWheel = (e: React.WheelEvent<HTMLInputElement>) => {
       // Mencegah perubahan angka tanpa sengaja saat scroll mouse
       if (isNumeric) {
@@ -89,6 +111,8 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           className
         )}
         onKeyDown={handleKeyDown}
+        onChange={handleChange}
+        onFocus={handleFocus}
         onWheel={handleWheel}
         ref={ref}
         {...props}
