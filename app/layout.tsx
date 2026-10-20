@@ -126,6 +126,10 @@ export default function RootLayout({
   return (
     <html lang="id" className={inter.variable}>
       <head>
+        <meta
+          name="description"
+          content="Sistem manajemen operasional, stok tabung 4-keranjang, kasir surat jalan, piutang mitra, arus kas, dan penggajian terpadu untuk Pangkalan Puput LPG."
+        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
