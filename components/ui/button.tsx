@@ -4,15 +4,15 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '@/lib/utils/cn'
 
 const buttonVariants = cva(
-  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-base font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 min-h-11 px-4 py-2',
+  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-base font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 min-h-11 px-4 py-2',
   {
     variants: {
       variant: {
-        default: 'bg-primary text-primary-foreground hover:bg-green-700',
-        secondary: 'bg-secondary text-secondary-foreground hover:bg-sky-700',
-        danger: 'bg-danger text-danger-foreground hover:bg-red-700',
-        destructive: 'bg-danger text-danger-foreground hover:bg-red-700',
-        warning: 'bg-warning text-warning-foreground hover:bg-amber-700',
+        default: 'bg-primary text-primary-foreground hover:bg-green-800',
+        secondary: 'bg-secondary text-secondary-foreground hover:bg-sky-800',
+        danger: 'bg-danger text-danger-foreground hover:bg-red-800',
+        destructive: 'bg-danger text-danger-foreground hover:bg-red-800',
+        warning: 'bg-warning text-warning-foreground hover:bg-amber-800',
         outline: 'border border-slate-300 bg-white text-slate-800 hover:bg-slate-100',
         ghost: 'text-slate-700 hover:bg-slate-100 hover:text-slate-900'
       },

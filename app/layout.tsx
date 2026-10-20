@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
+import { WebVitals } from '@/components/shared/web-vitals'
 import './globals.css'
 
 const inter = Inter({
@@ -8,7 +9,7 @@ const inter = Inter({
   display: 'swap'
 })
 
-const rawSiteUrl =
+const rawEnvUrl =
   process.env.NEXT_PUBLIC_APP_URL ||
   (process.env.VERCEL_PROJECT_PRODUCTION_URL
     ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
@@ -16,7 +17,12 @@ const rawSiteUrl =
       ? `https://${process.env.VERCEL_URL}`
       : 'https://puput-lpg.vercel.app')
 
-const siteUrl = rawSiteUrl.startsWith('http') ? rawSiteUrl : `https://${rawSiteUrl}`
+let cleanUrl = rawEnvUrl.trim()
+if (cleanUrl.includes('=')) {
+  cleanUrl = cleanUrl.split('=').pop()?.trim() || cleanUrl
+}
+
+const siteUrl = cleanUrl.startsWith('http') ? cleanUrl : `https://${cleanUrl}`
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -126,6 +132,7 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-screen bg-slate-50 font-sans text-slate-900">
+        <WebVitals />
         {children}
       </body>
     </html>

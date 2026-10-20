@@ -44,3 +44,5 @@ next-env.d.ts
 /.qa-tmp
 /test-results/
 /supabase/.temp/
+.lighthouseci/
+.unlighthouse/

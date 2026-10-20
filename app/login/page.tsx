@@ -1,6 +1,13 @@
+import type { Metadata } from 'next'
 import Image from 'next/image'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { LoginForm } from './login-form'
+
+export const metadata: Metadata = {
+  title: 'Masuk ke Sistem | Puput LPG',
+  description:
+    'Portal autentikasi resmi sistem manajemen operasional pangkalan, kasir surat jalan, dan stok tabung gas Puput LPG.'
+}
 
 export default async function LoginPage({
   searchParams
@@ -26,6 +33,7 @@ export default async function LoginPage({
               width={210}
               height={117}
               priority
+              sizes="210px"
               className="h-auto w-[210px] object-contain"
             />
           </div>
