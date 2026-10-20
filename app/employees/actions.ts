@@ -35,6 +35,11 @@ export async function createEmployeeAction(data: {
   bonus_per_tabung: number
   join_date: string // 'YYYY-MM-DD'
 }) {
+  const authCheck = await verifyOwnerCaller()
+  if (authCheck.error) {
+    return { error: authCheck.error }
+  }
+
   const supabase = await createClient()
 
   const { error } = await supabase.from('employees').insert({
@@ -67,6 +72,11 @@ export async function updateEmployeeAction(data: {
   join_date: string
   is_active: boolean
 }) {
+  const authCheck = await verifyOwnerCaller()
+  if (authCheck.error) {
+    return { error: authCheck.error }
+  }
+
   const supabase = await createClient()
 
   const { error } = await supabase

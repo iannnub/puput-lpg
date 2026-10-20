@@ -284,8 +284,9 @@ export function TransactionsClient({
           <DialogHeader>
             <DialogTitle>Void Transaksi: {voidTarget?.invoice_number}</DialogTitle>
             <DialogDescription>
-              Tindakan ini akan membatalkan nota secara permanen, mengembalikan stok isi ke gudang,
-              membalik stok kosong & saldo pinjaman tabung mitra, serta membalik arus kas.
+              Tindakan ini akan membatalkan nota ini dan tidak dapat dipulihkan kembali. Seluruh
+              mutasi stok isi, tabung kosong, dan catatan kas terkait akan otomatis dibalikkan ke
+              kondisi sebelum transaksi.
             </DialogDescription>
           </DialogHeader>
 
