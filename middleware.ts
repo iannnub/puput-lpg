@@ -37,8 +37,11 @@ export async function middleware(request: NextRequest) {
     return redirectResponse
   }
 
-  if (pathname === '/login') {
-    if (user) {
+  const publicPaths = ['/login', '/robots.txt', '/sitemap.xml', '/manifest.webmanifest', '/favicon.ico']
+  const isPublicPath = publicPaths.includes(pathname) || pathname.endsWith('.txt') || pathname.endsWith('.xml')
+
+  if (isPublicPath) {
+    if (pathname === '/login' && user) {
       return redirectWithCookies('/dashboard')
     }
     return supabaseResponse
