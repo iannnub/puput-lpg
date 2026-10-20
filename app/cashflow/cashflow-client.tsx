@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { transferCashAction, createOperationalExpenseAction } from './actions'
 import { formatRupiah } from '@/lib/utils/format-currency'
 import { formatWibDateTime } from '@/lib/utils/date-wib'
+import { Input } from '@/components/ui/input'
 
 export interface CashflowItem {
   id: string
@@ -338,14 +339,14 @@ export function CashflowClient({
                 <label className="block text-sm font-medium text-slate-700 mb-1">
                   Nominal Mutasi (Rp)
                 </label>
-                <input
+                <Input
                   type="number"
                   min={1}
                   required
                   value={transferAmount}
                   onChange={(e) => setTransferAmount(e.target.value)}
                   placeholder="Contoh: 5000000"
-                  className="w-full min-h-11 rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-base text-slate-900 tabular-nums focus:border-green-600 focus:outline-none focus:ring-2 focus:ring-green-600"
+                  className="tabular-nums"
                 />
               </div>
 
@@ -417,14 +418,14 @@ export function CashflowClient({
                 <label className="block text-sm font-medium text-slate-700 mb-1">
                   Nominal Biaya (Rp)
                 </label>
-                <input
+                <Input
                   type="number"
                   min={1}
                   required
                   value={expenseAmount}
                   onChange={(e) => setExpenseAmount(e.target.value)}
                   placeholder="Contoh: 150000"
-                  className="w-full min-h-11 rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-base text-slate-900 tabular-nums focus:border-green-600 focus:outline-none focus:ring-2 focus:ring-green-600"
+                  className="tabular-nums"
                 />
               </div>
 

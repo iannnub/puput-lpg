@@ -237,8 +237,11 @@ export function MitrasClient({ mitras }: MitrasClientProps) {
               <Label htmlFor="mitraPhone">Nomor Telepon / WhatsApp</Label>
               <Input
                 id="mitraPhone"
+                type="tel"
+                inputMode="numeric"
+                pattern="[0-9]*"
                 value={phone}
-                onChange={e => setPhone(e.target.value)}
+                onChange={e => setPhone(e.target.value.replace(/[^\d]/g, ''))}
                 placeholder="0812xxxxxxxx"
               />
             </div>

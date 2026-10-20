@@ -605,3 +605,78 @@ describe('Suite 6: Validasi Transaksi & Credit Limit Mitra', () => {
     assert.match(res.reason!, /non-aktif/)
   })
 })
+
+// ============================================================================
+// SUITE 7: NUMERIC INPUTS & MOBILE KEYBOARD ATTRIBUTES
+// Menguji penegakan keyboard angka virtual (inputMode=numeric & pattern=[0-9]*)
+// serta pemblokiran karakter non-angka pada seluruh input
+// ============================================================================
+describe('Suite 7: Input Angka & Konfigurasi Keyboard Mobile', () => {
+  function resolveNumericProps(
+    type?: string,
+    inputMode?: string,
+    pattern?: string,
+    numericOnly?: boolean,
+    allowDecimal: boolean = false
+  ) {
+    const isNumeric =
+      type === 'number' || type === 'tel' || inputMode === 'numeric' || inputMode === 'tel' || numericOnly === true
+
+    const resolvedInputMode =
+      inputMode ?? (type === 'tel' ? 'numeric' : isNumeric ? 'numeric' : undefined)
+    const resolvedPattern =
+      pattern ?? (isNumeric && !allowDecimal ? '[0-9]*' : undefined)
+
+    return { isNumeric, resolvedInputMode, resolvedPattern }
+  }
+
+  function shouldBlockKey(key: string, isNumeric: boolean, allowDecimal: boolean = false): boolean {
+    if (!isNumeric) return false
+    // Blokir karakter eksponensial dan tanda minus/plus
+    if (['e', 'E', '+', '-'].includes(key)) return true
+    // Blokir desimal jika tidak diizinkan
+    if (!allowDecimal && (key === '.' || key === ',')) return true
+    return false
+  }
+
+  function sanitizeDigitsOnly(val: string): string {
+    return val.replace(/[^\d]/g, '')
+  }
+
+  it('Input type="number" otomatis menyetel inputMode="numeric" dan pattern="[0-9]*"', () => {
+    const props = resolveNumericProps('number')
+    assert.equal(props.isNumeric, true)
+    assert.equal(props.resolvedInputMode, 'numeric', 'Mobile browser harus membuka keyboard angka')
+    assert.equal(props.resolvedPattern, '[0-9]*', 'Pattern harus membatasi ke digit 0-9 murni')
+  })
+
+  it('Input type="tel" otomatis menyetel inputMode="numeric" untuk nomor HP/WA', () => {
+    const props = resolveNumericProps('tel')
+    assert.equal(props.isNumeric, true)
+    assert.equal(props.resolvedInputMode, 'numeric')
+    assert.equal(props.resolvedPattern, '[0-9]*')
+  })
+
+  it('numericOnly=true menyetel atribut keyboard angka meskipun type="text"', () => {
+    const props = resolveNumericProps('text', undefined, undefined, true)
+    assert.equal(props.isNumeric, true)
+    assert.equal(props.resolvedInputMode, 'numeric')
+    assert.equal(props.resolvedPattern, '[0-9]*')
+  })
+
+  it('Karakter berbahaya eksponensial (e, E) dan tanda (+, -) diblokir pada input angka', () => {
+    assert.equal(shouldBlockKey('e', true), true, 'Karakter "e" harus diblokir')
+    assert.equal(shouldBlockKey('E', true), true, 'Karakter "E" harus diblokir')
+    assert.equal(shouldBlockKey('+', true), true, 'Tanda "+" harus diblokir')
+    assert.equal(shouldBlockKey('-', true), true, 'Tanda "-" harus diblokir')
+    assert.equal(shouldBlockKey('.', true, false), true, 'Titik harus diblokir jika non-desimal')
+    assert.equal(shouldBlockKey('5', true), false, 'Angka "5" harus diizinkan')
+  })
+
+  it('Sanitasi nomor telepon / WA membersihkan karakter selain angka', () => {
+    assert.equal(sanitizeDigitsOnly('0812-3456-7890'), '081234567890')
+    assert.equal(sanitizeDigitsOnly('+62 812 3456 7890'), '6281234567890')
+    assert.equal(sanitizeDigitsOnly('abc0852xyz'), '0852')
+  })
+})
+

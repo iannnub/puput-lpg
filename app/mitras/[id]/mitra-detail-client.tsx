@@ -345,8 +345,11 @@ export function MitraDetailClient({
                   <Label htmlFor="editPhone">Nomor Telepon</Label>
                   <Input
                     id="editPhone"
+                    type="tel"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
                     value={phone}
-                    onChange={e => setPhone(e.target.value)}
+                    onChange={e => setPhone(e.target.value.replace(/[^\d]/g, ''))}
                   />
                 </div>
               </div>
