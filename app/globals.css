@@ -3,9 +3,14 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --ease-ios-spring: cubic-bezier(0.32, 0.72, 0, 1);
+  }
+
   body {
     @apply bg-slate-50 text-slate-900 antialiased;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    -webkit-tap-highlight-color: transparent;
   }
 
   /* Pastikan semua input, select, dan textarea minimal 16px (text-base) agar tidak auto-zoom di iOS */
@@ -16,6 +21,45 @@
   }
 }
 
+/* Utilitas Liquid Glass & Animasi Morphing Ala iPhone (Murni Solid + Translusensi, Tanpa Gradasi) */
+.glass-surface {
+  background-color: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+}
+
+.glass-header {
+  background-color: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+}
+
+.glass-modal {
+  background-color: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+/* Transisi Spring Momentum khas iOS */
+.ios-spring {
+  transition-timing-function: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
 .tabular-nums {
   font-variant-numeric: tabular-nums;
+}
+
+/* Respek pengguna terhadap prefers-reduced-motion sesuai modern-web-guidance */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

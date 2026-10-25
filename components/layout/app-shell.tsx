@@ -49,8 +49,8 @@ export async function AppShell({ children, activePath = '' }: AppShellProps) {
         onboardingCompleted={Boolean(settings?.onboarding_completed)}
       />
 
-      {/* Desktop Header (layar >= 768px / hidden md:block) */}
-      <header className="hidden md:block border-b border-slate-200 bg-white">
+      {/* Desktop Header (layar >= 768px / hidden md:block) with Liquid Glass */}
+      <header className="sticky top-0 z-30 hidden md:block border-b border-slate-200/80 bg-white/85 backdrop-blur-xl shadow-[0_1px_3px_rgba(0,0,0,0.03)] transition-all">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6">
           <div className="flex items-center gap-3">
             <Link href="/dashboard" className="inline-flex shrink-0 items-center">
@@ -94,7 +94,7 @@ export async function AppShell({ children, activePath = '' }: AppShellProps) {
       {/* Main Content Area with Desktop Sidebar */}
       <div className="mx-auto flex w-full max-w-7xl flex-1 gap-6 px-4 py-6 sm:px-6">
         <aside className="hidden w-60 shrink-0 md:block">
-          <nav className="space-y-1 rounded-md border border-slate-200 bg-white p-3 shadow-sm">
+          <nav className="space-y-1.5 rounded-2xl border border-slate-200/80 bg-white/90 backdrop-blur-xl p-3 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.04)]">
             {navItems.map(item => {
               const isActive =
                 activePath === item.href ||
@@ -103,10 +103,10 @@ export async function AppShell({ children, activePath = '' }: AppShellProps) {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`flex min-h-11 items-center gap-3 rounded-md px-3 py-2 text-sm font-semibold transition-colors ${
+                  className={`flex min-h-11 items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition-all duration-200 ease-ios-spring active:scale-[0.98] ${
                     isActive
-                      ? 'bg-primary text-white'
-                      : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900'
+                      ? 'bg-primary text-white shadow-sm'
+                      : 'text-slate-700 hover:bg-slate-100/80 hover:text-slate-900'
                   }`}
                 >
                   <item.icon className="h-4 w-4 shrink-0" />

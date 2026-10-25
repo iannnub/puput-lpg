@@ -1,0 +1,48 @@
+# Puput LPG - Sistem Distribusi & Manajemen Pangkalan Gas LPG
+
+> Sistem operasional terpadu untuk pangkalan dan agen distribusi gas LPG (3kg & 12kg) dengan pemantauan stok 4-keranjang, kasir surat jalan, piutang tempo mitra, arus kas, dan penggajian karyawan berbasis komisi.
+
+## Ringkasan Aplikasi
+- **Nama Aplikasi**: Puput LPG
+- **URL Resmi**: https://puput-lpg.vercel.app
+- **Tipe Aplikasi**: Web Application (PWA / Mobile-responsive SaaS)
+- **Bahasa**: Indonesia (id-ID)
+- **Zona Waktu**: Asia/Jakarta (WIB, UTC+7)
+
+## Modul & Fitur Utama
+
+### 1. Manajemen Stok Tabung 4-Keranjang (Four-Bucket Invariant)
+Memastikan kepatuhan total tabung pangkalan dengan formula:
+`Total Tabung = Tabung Isi (Gudang) + Tabung Kosong (Gudang) + Tabung Bocor/Klaim + Tabung Dipinjam Mitra`
+- **Penerimaan Pasokan (Restock)**: Verifikasi penerimaan tabung isi dari agen Pertamina dan penukaran tabung kosong/bocor.
+- **Klaim Tabung Bocor**: Pencatatan tabung bocor langsung saat unloading atau di gudang untuk ditukar garansi 1:1.
+- **Stok Opname Fisik**: Rekonsiliasi berkala dengan audit log selisih fisik vs sistem.
+
+### 2. Kasir Penjualan & Surat Jalan (Cashier & Delivery)
+- Transaksi Penjualan Tunai, Transfer Bank, dan Tempo / Hutang ke Pangkalan / Toko Mitra.
+- Cetak Surat Jalan dan Invoice PDF resmi.
+- Pengawasan Plafon Kredit (*Credit Limit*) dan Batas Maksimal Nota Gantung per Mitra.
+- Otorisasi darurat tempo via Override PIN/Kredensial Owner.
+
+### 3. Piutang Mitra & Pelunasan Cicilan
+- Pemantauan umur piutang (*aging schedule*) dan indikator jatuh tempo.
+- Penerimaan pembayaran cicilan dengan pembukuan otomatis ke kas pangkalan.
+- Penerimaan susulan tabung kosong dari mitra yang berhutang tabung.
+
+### 4. Arus Kas & Rekonsiliasi Bank (Cashflow)
+- Pencatatan transaksi Kas Masuk, Kas Keluar Operasional, dan Mutasi Setor Tunai ke Rekening Bank.
+- Saldo Kas Fisik vs Saldo Bank terpisah dan terevaluasi harian.
+
+### 5. Penggajian Karyawan & Kasbon FIFO (Payroll)
+- Gaji pokok, tunjangan kehadiran, dan komisi insentif per tabung kirim supir.
+- Pelunasan kasbon otomatis berbasis sistem antrean First In First Out (FIFO).
+- Cetak slip gaji PDF individual per periode penggajian.
+
+### 6. Laporan Laba Rugi & Rekap Mitra
+- Laporan laba kotor, beban operasional, dan laba bersih pangkalan.
+- Analisis perputaran tabung dan volume penjualan per pangkalan mitra.
+
+## Standar Keamanan & Aksesibilitas
+- **Role-Based Access Control (RBAC)**: Pemisahan hak akses Owner (keuangan, laporan, karyawan) dan Staff (operasional kasir & gudang).
+- **Aksesibilitas**: Sesuai WCAG AA (rasio kontras > 4.5:1, target sentuh mobile > 44px, navigasi keyboard penuh).
+- **Keamanan**: OWASP ASVS 4.0 compliant, perlindungan brute-force, signed stateless tokens, dan sanitasi ketat.

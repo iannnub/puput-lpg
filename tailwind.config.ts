@@ -13,6 +13,9 @@ const config: Config = {
       fontFamily: {
         sans: ['var(--font-inter)', 'Inter', 'system-ui', 'sans-serif']
       },
+      transitionTimingFunction: {
+        'ios-spring': 'cubic-bezier(0.32, 0.72, 0, 1)'
+      },
       colors: {
         primary: {
           DEFAULT: '#15803d',

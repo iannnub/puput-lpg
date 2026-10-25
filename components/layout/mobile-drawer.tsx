@@ -63,8 +63,8 @@ export function MobileDrawer({
 
   return (
     <>
-      {/* Sticky Mobile Top Bar (Tinggi 56px, hanya tampil pada layar < 768px / md:hidden) */}
-      <div className="sticky top-0 z-40 flex h-14 w-full items-center justify-between border-b border-slate-200 bg-white px-4 md:hidden">
+      {/* Sticky Mobile Top Bar with Liquid Frosted Glass (layar < 768px / md:hidden) */}
+      <div className="sticky top-0 z-40 flex h-14 w-full items-center justify-between border-b border-slate-200/80 bg-white/85 backdrop-blur-xl px-4 md:hidden shadow-[0_1px_3px_rgba(0,0,0,0.03)] transition-all">
         <Link href="/dashboard" className="flex items-center gap-2">
           <Image
             src="/logo-transparent.png"
@@ -82,34 +82,34 @@ export function MobileDrawer({
         </Link>
 
         <div className="flex items-center gap-2">
-          <Badge variant={isOwner ? 'default' : 'secondary'} className="text-[10px] px-1.5 py-0.5">
+          <Badge variant={isOwner ? 'default' : 'secondary'} className="text-[10px] px-2 py-0.5 font-bold">
             {isOwner ? 'OWNER' : 'STAFF'}
           </Badge>
           <button
             type="button"
             onClick={() => setIsOpen(true)}
             aria-label="Buka menu navigasi"
-            className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-md border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-primary"
+            className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-xl border border-slate-200/80 bg-white/90 text-slate-700 hover:bg-slate-50 active:scale-95 transition-all shadow-xs focus:outline-none focus:ring-2 focus:ring-primary"
           >
             <Menu className="h-5 w-5" />
           </button>
         </div>
       </div>
 
-      {/* Off-canvas Drawer Modal */}
+      {/* Off-canvas Drawer Modal with Liquid Glass & Spring Physics */}
       {isOpen && (
         <div className="fixed inset-0 z-50 flex md:hidden" role="dialog" aria-modal="true">
-          {/* Backdrop gelap */}
+          {/* Backdrop gelap blur */}
           <div
-            className="fixed inset-0 bg-slate-900/60 transition-opacity"
+            className="fixed inset-0 bg-slate-900/40 backdrop-blur-md transition-opacity duration-300 animate-in fade-in"
             onClick={() => setIsOpen(false)}
             aria-hidden="true"
           />
 
-          {/* Panel Drawer (maksimal 320px) */}
-          <div className="relative flex w-full max-w-xs flex-1 flex-col bg-white shadow-xl">
+          {/* Panel Drawer (maksimal 320px) dengan Frosted Glass */}
+          <div className="relative flex w-full max-w-xs flex-1 flex-col bg-white/95 backdrop-blur-2xl border-l border-white/60 shadow-2xl transition-transform duration-300 ease-ios-spring animate-in slide-in-from-right">
             {/* Header Drawer */}
-            <div className="flex h-14 items-center justify-between border-b border-slate-200 px-4">
+            <div className="flex h-14 items-center justify-between border-b border-slate-200/80 px-4">
               <div className="flex items-center gap-2">
                 <Image
                   src="/logo-transparent.png"
@@ -126,14 +126,14 @@ export function MobileDrawer({
                 type="button"
                 onClick={() => setIsOpen(false)}
                 aria-label="Tutup menu navigasi"
-                className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-md text-slate-500 hover:bg-slate-100 hover:text-slate-900"
+                className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full text-slate-500 hover:bg-slate-100/80 hover:text-slate-900 active:scale-95 transition-all"
               >
                 <X className="h-5 w-5" />
               </button>
             </div>
 
             {/* Info Pengguna */}
-            <div className="border-b border-slate-100 bg-slate-50 px-4 py-3">
+            <div className="border-b border-slate-100 bg-slate-50/80 px-4 py-3">
               <div className="flex items-center justify-between">
                 <div className="min-w-0 flex-1 pr-2">
                   <div className="truncate text-sm font-bold text-slate-900">{fullName}</div>
@@ -146,7 +146,7 @@ export function MobileDrawer({
             </div>
 
             {/* Daftar Menu Navigasi */}
-            <nav className="flex-1 space-y-1 overflow-y-auto p-3">
+            <nav className="flex-1 space-y-1.5 overflow-y-auto p-3">
               {visibleItems.map(item => {
                 const isActive =
                   pathname === item.href ||
@@ -156,10 +156,10 @@ export function MobileDrawer({
                     key={item.href}
                     href={item.href}
                     onClick={() => setIsOpen(false)}
-                    className={`flex min-h-11 items-center gap-3 rounded-md px-3 py-2.5 text-base font-semibold transition-colors ${
+                    className={`flex min-h-11 items-center gap-3 rounded-xl px-3 py-2.5 text-base font-semibold transition-all duration-200 ease-ios-spring active:scale-[0.98] ${
                       isActive
-                        ? 'bg-primary text-white'
-                        : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900'
+                        ? 'bg-primary text-white shadow-sm'
+                        : 'text-slate-700 hover:bg-slate-100/80 hover:text-slate-900'
                     }`}
                   >
                     <item.icon className="h-5 w-5 shrink-0" />
@@ -170,12 +170,12 @@ export function MobileDrawer({
             </nav>
 
             {/* Footer Drawer: Tombol Keluar */}
-            <div className="border-t border-slate-200 p-3">
+            <div className="border-t border-slate-200/80 p-3">
               <form action={logoutAction}>
                 <Button
                   type="submit"
                   variant="outline"
-                  className="w-full min-h-11 justify-start gap-3 border-danger/30 text-danger hover:bg-red-50 hover:text-danger"
+                  className="w-full min-h-11 justify-start gap-3 rounded-xl border-danger/30 text-danger hover:bg-red-50 hover:text-danger active:scale-95 transition-all"
                 >
                   <LogOut className="h-4 w-4 shrink-0" />
                   <span>Keluar dari Akun</span>

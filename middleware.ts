@@ -37,8 +37,8 @@ export async function middleware(request: NextRequest) {
     return redirectResponse
   }
 
-  const publicPaths = ['/login', '/robots.txt', '/sitemap.xml', '/manifest.webmanifest', '/favicon.ico']
-  const isPublicPath = publicPaths.includes(pathname) || pathname.endsWith('.txt') || pathname.endsWith('.xml')
+  const publicPaths = ['/login', '/robots.txt', '/sitemap.xml', '/llms.txt', '/manifest.webmanifest', '/favicon.ico']
+  const isPublicPath = publicPaths.includes(pathname) || pathname.endsWith('.txt') || pathname.endsWith('.xml') || pathname.endsWith('.webmanifest')
 
   if (isPublicPath) {
     if (pathname === '/login' && user) {
